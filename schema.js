@@ -50,13 +50,13 @@ const BookType = new GraphQLObjectType({
   fields: _ => ({
     title: {
       type: GraphQLString,
-      description: 'Book title',
-      resolve: books => books.title
+      description: 'Book title'
+      // resolve: books => books.title <- this is implied
     },
     isbn: {
       type: GraphQLString,
-      description: 'Book isbn number',
-      resolve: books => books.isbn
+      description: 'Book isbn number'
+      // resolve: books => books.isbn <- this is implied as well
     }
   })
 })
