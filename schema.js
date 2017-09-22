@@ -8,8 +8,7 @@ const {
   GraphQLSchema,
   GraphQLInt,
   GraphQLString,
-  GraphQLList,
-  GraphQLUnionType
+  GraphQLList
 } = require('graphql')
 
 

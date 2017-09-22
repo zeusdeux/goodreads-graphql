@@ -4,5 +4,5 @@ rules:
   no-console: 2
   space-before-function-paren: 0
   no-multiple-empty-lines: [2, { 'max': 2 }]
-  no-unused-vars: [2, { 'varsIgnorePattern': '(^_)|h', 'argsIgnorePattern': '^_' }]
+  no-unused-vars: [2, { 'varsIgnorePattern': '^_', 'argsIgnorePattern': '^_' }]
   indent: [2, 2, { "SwitchCase": 0 }]
