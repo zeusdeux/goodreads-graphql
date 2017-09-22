@@ -1,0 +1,30 @@
+{
+  "name": "goodreads-graphql",
+  "version": "1.0.0",
+  "description": "Learning about graphql by building a server between the user and the Goodreads REST api",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start-dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Mudit Ameta",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.15.4",
+    "express-graphql": "^0.6.11",
+    "graphql": "^0.11.3",
+    "node-fetch": "^1.7.3",
+    "xml2js": "^0.4.19"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zeusdeux/goodreads-graphql.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zeusdeux/goodreads-graphql/issues"
+  },
+  "homepage": "https://github.com/zeusdeux/goodreads-graphql#readme"
+}
