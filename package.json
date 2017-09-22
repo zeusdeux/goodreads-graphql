@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Learning about graphql by building a server between the user and the Goodreads REST api",
   "private": true,
-  "main": "index.js",
+  "main": "index.mjs",
   "scripts": {
-    "start-dev": "nodemon index.js",
+    "start-dev": "nodemon --experimental-modules index.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

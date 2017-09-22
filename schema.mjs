@@ -1,7 +1,8 @@
-const fetch = require('node-fetch')
-const util = require('util')
-const parseXML = util.promisify(require('xml2js').parseString)
-const {goodreads: {key}} = require('./config')
+import fetch from 'node-fetch'
+import util from 'util'
+import xml2js from 'xml2js'
+import graphql from 'graphql'
+import {goodreads} from './config.mjs'
 
 const {
   GraphQLObjectType,
@@ -9,7 +10,10 @@ const {
   GraphQLInt,
   GraphQLString,
   GraphQLList
-} = require('graphql')
+} = graphql
+
+const {key} = goodreads
+const parseXML = util.promisify(xml2js.parseString)
 
 
 const fetchGR = (endpoint, q = '') => {
@@ -91,7 +95,7 @@ const AuthorType = new GraphQLObjectType({
   })
 })
 
-module.exports = new GraphQLSchema({
+export default new GraphQLSchema({
   query: new GraphQLObjectType({
     name: 'Query',
     description: 'Goodreads API exposed via graphql',
