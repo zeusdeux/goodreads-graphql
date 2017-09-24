@@ -1,7 +1,4 @@
-const fetch = require('node-fetch')
-const util = require('util')
-const parseXML = util.promisify(require('xml2js').parseString)
-const {goodreads: {key}} = require('./config')
+let MOTD = 'AYYYYY'
 
 const {
   GraphQLObjectType,
@@ -12,38 +9,6 @@ const {
 } = require('graphql')
 
 
-const fetchGR = (endpoint, q = '') => {
-  return fetch(`https://www.goodreads.com/${endpoint}?${q}${q.length ? '&' : ''}key=${key}`)
-    .then(r => r.text())
-    .then(parseXML)
-    .then(r => {
-      const { error, GoodreadsResponse } = r
-      if (error) {
-        return Promise.reject(new Error(error))
-      }
-
-      return GoodreadsResponse
-    })
-}
-const getAuthorById = id => {
-  return fetchGR('author/show.xml', `id=${id}`)
-    .then(r => r.author[0])
-}
-
-const getAuthorByName = name => {
-  const authorName = encodeURIComponent(name)
-
-  return fetchGR(`api/author_url/${authorName}`)
-    .then(r => {
-      try {
-        return r.author[0]['$'].id
-      } catch (_) {
-        return Promise.reject(new Error('author not found'))
-      }
-    })
-    .then(getAuthorById)
-}
-
 const BookType = new GraphQLObjectType({
   name: 'Books',
   description: 'Books by author',
@@ -51,12 +16,10 @@ const BookType = new GraphQLObjectType({
     title: {
       type: GraphQLString,
       description: 'Book title'
-      // resolve: books => books.title <- this is implied
     },
     isbn: {
       type: GraphQLString,
       description: 'Book isbn number'
-      // resolve: books => books.isbn <- this is implied as well
     }
   })
 })
@@ -104,7 +67,7 @@ module.exports = new GraphQLSchema({
           id: { type: GraphQLInt, description: 'Author id to search for' },
           name: { type: GraphQLString, description: 'Author name to search for' }
         },
-        resolve: (root, { id, name }) => {
+        resolve: (root, { id, name }, {loaders: {getAuthorByNameLoader, getAuthorByIdLoader}}) => {
           const hasName = !!name
           const hasId = typeof id === 'number'
 
@@ -112,13 +75,39 @@ module.exports = new GraphQLSchema({
             return Promise.reject(new Error('Provide either author name or author id, not both'))
           }
           if (hasName) {
-            return getAuthorByName(name)
+            return getAuthorByNameLoader.load(name)
           }
           if (hasId) {
-            return getAuthorById(id)
+            return getAuthorByIdLoader.load(id)
           }
 
           return Promise.reject(new Error('Author id or name argument must be provided'))
+        }
+      },
+      motd: {
+        type: GraphQLString,
+        description: 'Message of the day!',
+        resolve: _ => MOTD
+      }
+    })
+  }),
+  mutation: new GraphQLObjectType({
+    name: 'Mutation',
+    description: 'Update MOTD using mutations',
+
+    fields: _ => ({
+      setMotd: {
+        name: 'setMotd',
+        description: 'set the message of the day!',
+        type: GraphQLString,
+
+        args: {
+          msg: { type: GraphQLString, description: 'New message of the day' }
+        },
+        resolve(_, {msg}) {
+          if (!msg) throw new Error('msg argument must be provided')
+          MOTD = msg
+          return MOTD
         }
       }
     })
