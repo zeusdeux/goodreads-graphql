@@ -54,6 +54,16 @@ const AuthorType = new GraphQLObjectType({
   })
 })
 
+const SetMotdResponseType = new GraphQLObjectType({
+  name: 'setMotdResponseType',
+  description: 'Response of setMotd call',
+
+  fields: _ => ({
+    motd: { type: GraphQLString, description: 'New MOTD msg' },
+    date: { type: GraphQLString, description: 'Date when MOTD was changed' }
+  })
+})
+
 module.exports = new GraphQLSchema({
   query: new GraphQLObjectType({
     name: 'Query',
@@ -99,7 +109,7 @@ module.exports = new GraphQLSchema({
       setMotd: {
         name: 'setMotd',
         description: 'set the message of the day!',
-        type: GraphQLString,
+        type: SetMotdResponseType,
 
         args: {
           msg: { type: GraphQLString, description: 'New message of the day' }
@@ -107,7 +117,10 @@ module.exports = new GraphQLSchema({
         resolve(_, {msg}) {
           if (!msg) throw new Error('msg argument must be provided')
           MOTD = msg
-          return MOTD
+          return {
+            date: new Date().toISOString(),
+            motd: MOTD
+          }
         }
       }
     })
